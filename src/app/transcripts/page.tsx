@@ -1,9 +1,9 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Download, Copy, CheckCircle, Clock } from "lucide-react";
+import { Clock, Copy, Download } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 
 interface TranscriptEntry {
   text: string;
@@ -17,7 +17,7 @@ interface TranscriptData {
   transcript: TranscriptEntry[];
 }
 
-export default function TranscriptPage() {
+function TranscriptContent() {
   const searchParams = useSearchParams();
   const [transcriptData, setTranscriptData] = useState<TranscriptData | null>(
     null
@@ -65,7 +65,7 @@ export default function TranscriptPage() {
     if (!transcriptData) return;
 
     let content = "";
-    let filename = `transcript_${transcriptData.video_id}.${format}`;
+    const filename = `transcript_${transcriptData.video_id}.${format}`;
 
     if (format === "txt") {
       if (includeTimestamps) {
@@ -254,5 +254,19 @@ export default function TranscriptPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function TranscriptPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      }
+    >
+      <TranscriptContent />
+    </Suspense>
   );
 }
