@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FileText } from "lucide-react";
+import { AlertCircle, FileText } from "lucide-react";
 
 export default function Home() {
   const router = useRouter();
@@ -11,22 +11,25 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleGetTranscript = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!url.trim()) return;
+
     setIsLoading(true);
     setError(null);
 
     try {
-      // Extract video ID from URL
-      const videoId = url.split("v=")[1]?.split("&")[0];
-      if (!videoId) {
-        throw new Error("Invalid YouTube URL");
+      const response = await fetch(`/api/transcript?url=${url}`);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to fetch transcript");
       }
 
-      // Navigate to transcript page with video ID
-      router.push(`/transcript/${videoId}`);
-    } catch {
-      setError("Please enter a valid YouTube URL");
+      const data = await response.json();
+      router.push(`/transcripts?videoId=${data.video_id}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -86,7 +89,7 @@ export default function Home() {
             className="max-w-2xl mx-auto"
           >
             <form
-              onSubmit={handleSubmit}
+              onSubmit={handleGetTranscript}
               className="flex flex-col sm:flex-row gap-4 p-2 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700"
             >
               <input
@@ -130,6 +133,7 @@ export default function Home() {
               className="max-w-2xl mx-auto mt-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl"
             >
               <div className="flex items-center space-x-2">
+                <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
                 <p className="text-red-700 dark:text-red-300">{error}</p>
               </div>
             </motion.div>
