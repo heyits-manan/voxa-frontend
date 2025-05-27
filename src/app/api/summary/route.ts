@@ -14,20 +14,18 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    console.log("Fetching transcript for URL:", url);
-    const response = await fetch(`${BACKEND_URL}/transcript?url=${url}`, {
+    console.log("Fetching summary for URL:", url);
+    const response = await fetch(`${BACKEND_URL}/summary?url=${url}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    console.log("HEllo");
-
     if (!response.ok) {
       const errorData = await response.json();
       return NextResponse.json(
-        { error: errorData.detail || "Failed to fetch transcript" },
+        { error: errorData.detail || "Failed to fetch summary" },
         { status: response.status }
       );
     }
@@ -35,7 +33,7 @@ export async function GET(request: NextRequest) {
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    console.error("Error fetching transcript:", error);
+    console.error("Error fetching summary:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

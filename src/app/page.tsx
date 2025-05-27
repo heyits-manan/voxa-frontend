@@ -50,7 +50,7 @@ export default function Home() {
                 <FileText className="w-5 h-5 text-white" />
               </div>
               <span className="text-xl font-bold text-gray-900 dark:text-white">
-                YT Transcript
+                Voxa - Talk to your videos.
               </span>
             </motion.div>
           </div>
@@ -78,7 +78,7 @@ export default function Home() {
             className="text-xl text-gray-600 dark:text-gray-300 mb-12 max-w-3xl mx-auto"
           >
             Fast, accurate, and completely free YouTube transcript extractor.
-            Get subtitles and transcripts from any video in multiple languages.
+            Get transcripts for any youtube video and ask questions about it.
           </motion.p>
 
           {/* URL Input Form */}
