@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
+import Quiz from "@/components/Quiz";
 
 interface TranscriptEntry {
   text: string;
@@ -245,20 +246,13 @@ function TranscriptContent() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <div className="inline-flex items-center gap-3 px-6 py-3 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 mb-6">
-            <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-            <span className="text-white/80 text-sm font-medium">
-              Live Transcript Studio
-            </span>
-          </div>
-
           <h1 className="text-4xl lg:text-6xl font-black mb-4">
             <span className="bg-gradient-to-r from-white via-purple-200 to-cyan-200 bg-clip-text text-transparent">
-              Transcript
+              Voxa
             </span>
             <br />
             <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
-              Studio
+              Talk to your videos.
             </span>
           </h1>
 
@@ -317,7 +311,7 @@ function TranscriptContent() {
                     <span className="font-medium text-sm">
                       {Math.ceil(
                         transcriptData.transcript[
-                          transcriptData.transcript.length - 1
+                          transcriptData?.transcript?.length - 1
                         ]?.start / 60
                       ) || 0}{" "}
                       minutes
@@ -651,6 +645,20 @@ function TranscriptContent() {
             </motion.div>
           ))}
         </motion.div>
+
+        {/* Quiz Section */}
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          {/* Quiz Section */}
+          <div className="bg-gray-900 rounded-xl p-6 mb-8">
+            <h2 className="text-xl font-semibold text-white flex items-center gap-2 mb-4">
+              <Wand2 className="w-5 h-5 text-blue-400" />
+              Quiz
+            </h2>
+            {transcriptData?.video_id && (
+              <Quiz videoId={transcriptData.video_id} />
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

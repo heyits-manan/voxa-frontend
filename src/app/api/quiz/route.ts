@@ -5,18 +5,20 @@ const BACKEND_URL =
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const url = searchParams.get("url");
+  const videoId = searchParams.get("videoId");
 
-  if (!url) {
+  if (!videoId) {
     return NextResponse.json(
-      { error: "URL parameter is required" },
+      { error: "Video ID is required" },
       { status: 400 }
     );
   }
 
   try {
-    console.log("Fetching summary for URL:", url);
-    const response = await fetch(`${BACKEND_URL}/summary?url=${url}`, {
+    // Compose the YouTube URL from the videoId
+    const url = `https://www.youtube.com/watch?v=${videoId}`;
+
+    const response = await fetch(`${BACKEND_URL}/quiz?url=${url}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -26,7 +28,7 @@ export async function GET(request: NextRequest) {
     if (!response.ok) {
       const errorData = await response.json();
       return NextResponse.json(
-        { error: errorData.detail || "Failed to fetch summary" },
+        { error: errorData.detail || "Failed to fetch quiz" },
         { status: response.status }
       );
     }
@@ -34,9 +36,9 @@ export async function GET(request: NextRequest) {
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    console.error("Error fetching summary:", error);
+    console.error("Error generating quiz:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Failed to generate quiz" },
       { status: 500 }
     );
   }
